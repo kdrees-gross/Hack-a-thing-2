@@ -33,6 +33,12 @@ export default function WorkerLayout() {
           headerLeft,
         }}
       />
+      <Tabs.Screen
+        name="job/[id]"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

@@ -13,8 +13,11 @@ export default function Signup() {
 
   async function handleSignup() {
     try {
-      await signup(username, password, role);
-      router.replace(role === 'worker' ? '/(worker)/jobs' : '/(poster)/my-jobs');
+      const user = await signup(username, password, role);
+      // Small delay to ensure state propagates before navigation
+      setTimeout(() => {
+        router.replace(user.role === 'worker' ? '/(worker)/jobs' : '/(poster)/my-jobs');
+      }, 100);
     } catch {
       alert('Signup failed');
     }
