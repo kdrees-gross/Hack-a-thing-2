@@ -83,9 +83,15 @@ export default function Jobs() {
     );
   }
 
+  // Filter out jobs that already have an approved worker
+  const availableJobs = jobs.filter(job => {
+    const hasApprovedWorker = job.applications?.some(app => app.status === 'approved');
+    return !hasApprovedWorker;
+  });
+
   const filteredJobs = showOnlyMatching
-    ? jobs.filter(job => checkJobMatchesAvailability(job, availability))
-    : jobs;
+    ? availableJobs.filter(job => checkJobMatchesAvailability(job, availability))
+    : availableJobs;
 
   return (
     <View style={{ flex: 1, padding: 16 }}>

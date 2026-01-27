@@ -20,6 +20,10 @@ export default function JobDetail() {
     (a: any) => a.workerId === user?.id
   );
 
+  const hasApprovedWorker = job.applications?.some(
+    (a: any) => a.status === 'approved'
+  );
+
   async function apply() {
     if (!user?.id) {
       alert('You must be logged in to apply');
@@ -46,7 +50,11 @@ export default function JobDetail() {
         {job.date} • {job.startTime} - {job.endTime}
       </Text>
 
-      {!application && (
+      {hasApprovedWorker && !application && (
+        <Text style={{ marginTop: 16, color: '#dc2626' }}>❌ This position has been filled</Text>
+      )}
+
+      {!application && !hasApprovedWorker && (
         <Pressable onPress={apply} style={{ marginTop: 16, padding: 12, backgroundColor: '#2563eb', borderRadius: 6 }}>
           <Text style={{ color: 'white', textAlign: 'center' }}>Apply</Text>
         </Pressable>
