@@ -5,4 +5,7 @@ export interface Job {
   location: string;
   postedBy: string;
   approvedWorkerId?: string;
+  date: string;
+  startTime: string;
+  endTime: string;
 }

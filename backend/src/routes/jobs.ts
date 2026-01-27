@@ -5,16 +5,7 @@ import { randomUUID } from 'crypto';
 const router = Router();
 
 // 🔴 temporary in-memory store
-const jobs: Job[] = [
-  {
-    id: '1',
-    title: 'Clean garage',
-    description: 'Clean out a 2-car garage',
-    location: 'Boston',
-    pay: '$50',
-    postedBy: 'poster1',
-  },
-];
+const jobs: Job[] = [];
 
 // GET /jobs
 router.get('/', (_req, res) => {
@@ -23,7 +14,7 @@ router.get('/', (_req, res) => {
 
 // POST /jobs
 router.post('/', (req, res) => {
-  const { title, description, location, pay } = req.body;
+  const { title, description, location, pay, date, startTime, endTime, postedBy } = req.body;
 
   const newJob: Job = {
     id: randomUUID(),
@@ -31,11 +22,25 @@ router.post('/', (req, res) => {
     description,
     location,
     pay,
-    postedBy: 'poster1',
+    postedBy,
+    date,
+    startTime,
+    endTime,
   };
 
   jobs.push(newJob);
   res.status(201).json(newJob);
+});
+
+// DELETE /jobs/:id
+router.delete('/:id', (req, res) => {
+  const index = jobs.findIndex(j => j.id === req.params.id);
+  if (index === -1) {
+    return res.status(404).json({ error: 'Job not found' });
+  }
+
+  jobs.splice(index, 1);
+  res.status(204).send();
 });
 
 export default router;

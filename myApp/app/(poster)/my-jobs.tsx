@@ -1,7 +1,8 @@
-import { View, Text, Pressable, ScrollView } from 'react-native';
-import { useEffect, useState } from 'react';
+import { View, Text, Pressable, ScrollView, Alert } from 'react-native';
+import { useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 type Application = {
   workerId: string;
@@ -14,10 +15,15 @@ type Job = {
   description: string;
   location: string;
   pay: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  postedBy: string;
   applications: Application[];
 };
 
 export default function MyJobs() {
+  const { user } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,22 +31,56 @@ export default function MyJobs() {
     setLoading(true);
     fetch('http://127.0.0.1:4000/jobs')
       .then((res) => res.json())
-      .then((data) => setJobs(data))
+      .then((data) => {
+        // Filter to only show jobs posted by current user
+        const myJobs = data.filter((job: Job) => job.postedBy === user?.id);
+        setJobs(myJobs);
+      })
       .finally(() => setLoading(false));
   };
 
   useFocusEffect(
     useCallback(() => {
       fetchJobs();
-    }, [])
+    }, [user?.id])
   );
 
-const approve = async (jobId: string) => {
-  await fetch(`http://127.0.0.1:4000/jobs/${jobId}/approve`, {
-    method: 'POST',
-  });
-  fetchJobs(); // ✅ re-fetch after approve
-};
+  const approve = async (jobId: string, workerId: string) => {
+    await fetch(`http://127.0.0.1:4000/jobs/${jobId}/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workerId }),
+    });
+    fetchJobs();
+  };
+
+  const deleteJob = (jobId: string) => {
+    Alert.alert(
+      'Delete Job',
+      'Are you sure you want to delete this job?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await fetch(`http://127.0.0.1:4000/jobs/${jobId}`, {
+                method: 'DELETE',
+              });
+              fetchJobs();
+            } catch (err) {
+              alert('Error deleting job');
+              console.error(err);
+            }
+          },
+        },
+      ]
+    );
+  };
 
   if (loading) {
     return <Text style={{ padding: 16 }}>Loading…</Text>;
@@ -66,11 +106,30 @@ const approve = async (jobId: string) => {
             marginBottom: 16,
           }}
         >
-          <Text style={{ fontSize: 18, fontWeight: '500' }}>
-            {job.title}
-          </Text>
-          <Text>{job.location}</Text>
-          <Text>{job.pay}</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 18, fontWeight: '500' }}>
+                {job.title}
+              </Text>
+              <Text>{job.location}</Text>
+              <Text>{job.pay}</Text>
+              <Text style={{ marginTop: 4, color: '#4b5563' }}>
+                {job.date} • {job.startTime} - {job.endTime}
+              </Text>
+            </View>
+
+            <Pressable
+              onPress={() => deleteJob(job.id)}
+              style={{
+                padding: 8,
+                backgroundColor: '#dc2626',
+                borderRadius: 4,
+                marginLeft: 8,
+              }}
+            >
+              <Text style={{ color: 'white', fontSize: 12 }}>Delete</Text>
+            </Pressable>
+          </View>
 
           <View style={{ marginTop: 12 }}>
             <Text style={{ fontWeight: '600' }}>
@@ -88,7 +147,7 @@ const approve = async (jobId: string) => {
 
                 {app.status === 'pending' && (
                   <Pressable
-                    onPress={() => approve(job.id)}
+                    onPress={() => approve(job.id, app.workerId)}
                     style={{
                       marginTop: 8,
                       padding: 8,

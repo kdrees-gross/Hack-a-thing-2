@@ -24,6 +24,10 @@ type Job = {
   description: string;
   location: string;
   pay: string;
+  postedBy: string;
+  date: string;
+  startTime: string;
+  endTime: string;
   applications: Application[];
 };
 
@@ -39,7 +43,7 @@ app.get('/jobs', (_req, res) => {
 });
 
 app.post('/jobs', (req, res) => {
-  const { title, description, location, pay } = req.body;
+  const { title, description, location, pay, postedBy, date, startTime, endTime } = req.body;
 
   const job: Job = {
     id: randomUUID(),
@@ -47,6 +51,10 @@ app.post('/jobs', (req, res) => {
     description,
     location,
     pay,
+    postedBy,
+    date,
+    startTime,
+    endTime,
     applications: [],
   };
 
@@ -55,16 +63,19 @@ app.post('/jobs', (req, res) => {
 });
 
 app.post('/jobs/:id/apply', (req, res) => {
+  const { workerId } = req.body;
   const job = jobs.find(j => j.id === req.params.id);
+
   if (!job) return res.status(404).send('Job not found');
+  if (!workerId) return res.status(400).send('Worker ID required');
 
   const alreadyApplied = job.applications.some(
-    a => a.workerId === 'worker1'
+    a => a.workerId === workerId
   );
 
   if (!alreadyApplied) {
     job.applications.push({
-      workerId: 'worker1',
+      workerId,
       status: 'pending',
     });
   }
@@ -73,11 +84,14 @@ app.post('/jobs/:id/apply', (req, res) => {
 });
 
 app.post('/jobs/:id/approve', (req, res) => {
+  const { workerId } = req.body;
   const job = jobs.find(j => j.id === req.params.id);
+
   if (!job) return res.status(404).send('Job not found');
+  if (!workerId) return res.status(400).send('Worker ID required');
 
   const application = job.applications.find(
-    a => a.workerId === 'worker1'
+    a => a.workerId === workerId
   );
 
   if (!application) {
@@ -87,6 +101,17 @@ app.post('/jobs/:id/approve', (req, res) => {
   application.status = 'approved';
 
   res.json(job);
+});
+
+// DELETE /jobs/:id
+app.delete('/jobs/:id', (req, res) => {
+  const index = jobs.findIndex(j => j.id === req.params.id);
+  if (index === -1) {
+    return res.status(404).json({ error: 'Job not found' });
+  }
+
+  jobs.splice(index, 1);
+  res.status(204).send();
 });
 
 app.post('/auth/signup', async (req, res) => {
@@ -147,6 +172,29 @@ app.post('/auth/login', async (req, res) => {
     token,
     user: { id: user.id, username: user.username, role: user.role },
   });
+});
+
+// GET /users/:userId/availability
+app.get('/users/:userId/availability', (req, res) => {
+  const user = users.find(u => u.id === req.params.userId);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  res.json({ availability: user.availability || [] });
+});
+
+// PUT /users/:userId/availability
+app.put('/users/:userId/availability', (req, res) => {
+  const user = users.find(u => u.id === req.params.userId);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  const { availability } = req.body;
+  user.availability = availability;
+
+  res.json({ availability: user.availability });
 });
 
 const PORT = 4000;

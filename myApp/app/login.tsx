@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
 
   const [username, setUsername] = useState('');
@@ -12,8 +12,11 @@ export default function Login() {
 
   async function handleLogin() {
     try {
-      await login(username, password);
-      router.replace(user?.role === 'worker' ? '/(worker)/jobs' : '/(poster)/my-jobs');
+      const user = await login(username, password);
+      // Small delay to ensure state propagates before navigation
+      setTimeout(() => {
+        router.replace(user.role === 'worker' ? '/(worker)/jobs' : '/(poster)/my-jobs');
+      }, 100);
     } catch {
       alert('Login failed');
     }
