@@ -8,13 +8,14 @@ const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 
 export default function Profile() {
   const { user } = useAuth();
   const [approvedJobs, setApprovedJobs] = useState<any[]>([]);
+  const [pendingJobs, setPendingJobs] = useState<any[]>([]);
   const [availability, setAvailability] = useState<AvailabilityBlock[]>([]);
   const [isEditingAvailability, setIsEditingAvailability] = useState(false);
 
   useEffect(() => {
     fetch('http://127.0.0.1:4000/jobs')
       .then((res) => res.json())
-      .then((jobs) =>
+      .then((jobs) => {
         setApprovedJobs(
           jobs.filter((job: any) =>
             job.applications?.some(
@@ -22,8 +23,16 @@ export default function Profile() {
                 a.workerId === user?.id && a.status === 'approved'
             )
           )
-        )
-      );
+        );
+        setPendingJobs(
+          jobs.filter((job: any) =>
+            job.applications?.some(
+              (a: any) =>
+                a.workerId === user?.id && a.status === 'pending'
+            )
+          )
+        );
+      });
 
     if (user?.id) {
       fetch(`http://127.0.0.1:4000/users/${user.id}/availability`)
@@ -185,6 +194,22 @@ export default function Profile() {
       )}
 
       <Text style={{ fontSize: 24, marginTop: 32, marginBottom: 16 }}>
+        Pending Applications
+      </Text>
+
+      {pendingJobs.length === 0 && (
+        <Text>No pending applications</Text>
+      )}
+
+      {pendingJobs.map((job) => (
+        <View key={job.id} style={{ padding: 12, borderWidth: 1, borderColor: '#f59e0b', borderRadius: 8, marginBottom: 8, backgroundColor: '#fef3c7' }}>
+          <Text style={{ fontWeight: '600' }}>⏳ {job.title}</Text>
+          <Text>{job.location}</Text>
+          <Text>{job.date} • {job.startTime} - {job.endTime}</Text>
+        </View>
+      ))}
+
+      <Text style={{ fontSize: 24, marginTop: 32, marginBottom: 16 }}>
         My Approved Jobs
       </Text>
 
@@ -195,6 +220,7 @@ export default function Profile() {
       {approvedJobs.map((job) => (
         <View key={job.id} style={{ padding: 12, borderWidth: 1, borderRadius: 8, marginBottom: 8 }}>
           <Text style={{ fontWeight: '600' }}>✅ {job.title}</Text>
+          <Text>{job.location}</Text>
           <Text>{job.date} • {job.startTime} - {job.endTime}</Text>
         </View>
       ))}
