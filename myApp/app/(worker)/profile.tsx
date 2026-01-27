@@ -201,13 +201,37 @@ export default function Profile() {
         <Text>No pending applications</Text>
       )}
 
-      {pendingJobs.map((job) => (
-        <View key={job.id} style={{ padding: 12, borderWidth: 1, borderColor: '#f59e0b', borderRadius: 8, marginBottom: 8, backgroundColor: '#fef3c7' }}>
-          <Text style={{ fontWeight: '600' }}>⏳ {job.title}</Text>
-          <Text>{job.location}</Text>
-          <Text>{job.date} • {job.startTime} - {job.endTime}</Text>
-        </View>
-      ))}
+      {pendingJobs.map((job) => {
+        const hasApprovedWorker = job.applications?.some(
+          (a: any) => a.status === 'approved'
+        );
+
+        return (
+          <View
+            key={job.id}
+            style={{
+              padding: 12,
+              borderWidth: 1,
+              borderColor: hasApprovedWorker ? '#dc2626' : '#f59e0b',
+              borderRadius: 8,
+              marginBottom: 8,
+              backgroundColor: hasApprovedWorker ? '#fee2e2' : '#fef3c7'
+            }}
+          >
+            <Text style={{ fontWeight: '600' }}>
+              {hasApprovedWorker ? '❌ Position Filled' : '⏳ Pending'}
+            </Text>
+            <Text style={{ fontWeight: '600', marginTop: 4 }}>{job.title}</Text>
+            <Text>{job.location}</Text>
+            <Text>{job.date} • {job.startTime} - {job.endTime}</Text>
+            {hasApprovedWorker && (
+              <Text style={{ marginTop: 4, fontSize: 12, color: '#7f1d1d' }}>
+                This position was filled. Your application was not selected.
+              </Text>
+            )}
+          </View>
+        );
+      })}
 
       <Text style={{ fontSize: 24, marginTop: 32, marginBottom: 16 }}>
         My Approved Jobs

@@ -140,28 +140,34 @@ export default function MyJobs() {
               <Text>No applications yet</Text>
             )}
 
-            {job.applications.map((app, index) => (
-              <View key={index} style={{ marginTop: 8 }}>
-                <Text>Worker: {app.workerId}</Text>
-                <Text>Status: {app.status}</Text>
+            {(() => {
+              const hasApprovedWorker = job.applications.some(
+                (a) => a.status === 'approved'
+              );
 
-                {app.status === 'pending' && (
-                  <Pressable
-                    onPress={() => approve(job.id, app.workerId)}
-                    style={{
-                      marginTop: 8,
-                      padding: 8,
-                      backgroundColor: '#16a34a',
-                      borderRadius: 4,
-                    }}
-                  >
-                    <Text style={{ color: 'white' }}>
-                      Approve
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
-            ))}
+              return job.applications.map((app, index) => (
+                <View key={index} style={{ marginTop: 8 }}>
+                  <Text>Worker: {app.workerId}</Text>
+                  <Text>Status: {app.status}</Text>
+
+                  {app.status === 'pending' && !hasApprovedWorker && (
+                    <Pressable
+                      onPress={() => approve(job.id, app.workerId)}
+                      style={{
+                        marginTop: 8,
+                        padding: 8,
+                        backgroundColor: '#16a34a',
+                        borderRadius: 4,
+                      }}
+                    >
+                      <Text style={{ color: 'white' }}>
+                        Approve
+                      </Text>
+                    </Pressable>
+                  )}
+                </View>
+              ));
+            })()}
           </View>
         </View>
       ))}
