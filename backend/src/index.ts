@@ -90,6 +90,12 @@ app.post('/jobs/:id/approve', (req, res) => {
   if (!job) return res.status(404).send('Job not found');
   if (!workerId) return res.status(400).send('Worker ID required');
 
+  // Check if there's already an approved worker
+  const hasApprovedWorker = job.applications.some(a => a.status === 'approved');
+  if (hasApprovedWorker) {
+    return res.status(400).send('This job already has an approved worker');
+  }
+
   const application = job.applications.find(
     a => a.workerId === workerId
   );
