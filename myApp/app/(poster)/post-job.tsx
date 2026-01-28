@@ -42,6 +42,47 @@ export default function PostJob() {
       return;
     }
 
+    // Validate pay is a positive number
+    const payAmount = parseFloat(pay.replace(/[^0-9.-]/g, ''));
+    if (isNaN(payAmount) || payAmount <= 0) {
+      alert('Pay must be a positive number');
+      return;
+    }
+
+    // Check if date is in the past
+    const selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      alert('Job date cannot be in the past');
+      return;
+    }
+
+    // Check if end time is after start time
+    const startMinutes = startTime.getHours() * 60 + startTime.getMinutes();
+    const endMinutes = endTime.getHours() * 60 + endTime.getMinutes();
+
+    if (endMinutes <= startMinutes) {
+      alert('End time must be after start time');
+      return;
+    }
+
+    // Check if job time is in the past (for today's date)
+    const now = new Date();
+    const isToday = selectedDate.getTime() === today.getTime();
+    if (isToday) {
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      if (startMinutes <= currentMinutes) {
+        alert('Job start time cannot be in the past');
+        return;
+      }
+      if (endMinutes <= currentMinutes) {
+        alert('Job end time cannot be in the past');
+        return;
+      }
+    }
+
     setSubmitting(true);
 
     try {
@@ -124,7 +165,12 @@ export default function PostJob() {
       <TextInput
         placeholder="Pay (e.g. $50)"
         value={pay}
-        onChangeText={setPay}
+        onChangeText={(text) => {
+          // Allow only numbers and dollar sign
+          const cleaned = text.replace(/[^0-9$]/g, '');
+          setPay(cleaned);
+        }}
+        keyboardType="numeric"
         style={styles.input}
       />
 
