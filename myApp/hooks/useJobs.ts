@@ -1,3 +1,4 @@
+// Developed with the assistance of Dartmouth ChatGPT
 import { useEffect, useState } from 'react';
 
 export type Job = {

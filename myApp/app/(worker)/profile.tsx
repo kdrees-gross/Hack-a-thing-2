@@ -1,3 +1,4 @@
+// Developed with the assistance of Claude
 import { View, Text, ScrollView, Pressable, Platform, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';

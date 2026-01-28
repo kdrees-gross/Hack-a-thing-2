@@ -1,3 +1,4 @@
+// Developed with the assistance of Claude
 import { Text, TextInput, Pressable, ScrollView, Platform, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';

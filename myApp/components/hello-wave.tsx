@@ -1,3 +1,4 @@
+// Developed with the assistance of Claude
 import Animated from 'react-native-reanimated';
 
 export function HelloWave() {

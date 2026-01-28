@@ -1,3 +1,4 @@
+// Developed with the assistance of Dartmouth ChatGPT
 export interface Job {
   id: string;
   title: string;

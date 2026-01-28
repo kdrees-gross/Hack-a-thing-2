@@ -1,3 +1,4 @@
+// Developed with the assistance of Dartmouth ChatGPT
 import express from 'express';
 import cors from 'cors';
 import { randomUUID } from 'crypto';

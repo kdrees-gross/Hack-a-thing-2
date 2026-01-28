@@ -1,3 +1,4 @@
+// Developed with the assistance of Dartmouth ChatGPT
 import { Stack } from 'expo-router';
 import { AuthProvider } from '../context/AuthContext';
 

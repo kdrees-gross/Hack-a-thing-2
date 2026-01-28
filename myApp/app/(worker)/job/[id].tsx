@@ -1,3 +1,4 @@
+// Developed with the assistance of Claude
 import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';

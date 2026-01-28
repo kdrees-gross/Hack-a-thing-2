@@ -1,3 +1,4 @@
+// Developed with the assistance of Dartmouth ChatGPT
 /**
  * Learn more about light and dark modes:
  * https://docs.expo.dev/guides/color-schemes/

@@ -1,3 +1,4 @@
+// Developed with the assistance of Claude
 import { View, Text, Pressable, ScrollView, Alert, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { useFocusEffect } from 'expo-router';

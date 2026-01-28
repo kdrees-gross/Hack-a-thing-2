@@ -1,3 +1,4 @@
+// Developed with the assistance of Claude
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 type Role = 'worker' | 'poster';

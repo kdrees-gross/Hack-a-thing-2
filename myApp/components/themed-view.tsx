@@ -1,3 +1,4 @@
+// Developed with the assistance of Claude
 import { View, type ViewProps } from 'react-native';
 
 import { useThemeColor } from '@/hooks/use-theme-color';

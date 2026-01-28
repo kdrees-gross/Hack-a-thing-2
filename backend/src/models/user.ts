@@ -1,3 +1,4 @@
+// Developed with the assistance of Claude
 export type UserRole = 'worker' | 'poster';
 
 export interface AvailabilityBlock {

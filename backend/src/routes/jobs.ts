@@ -1,3 +1,4 @@
+// Developed with the assistance of Claude
 import { Router } from 'express';
 import { Job } from '../models/job';
 import { randomUUID } from 'crypto';

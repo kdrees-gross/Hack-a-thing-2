@@ -1,3 +1,4 @@
+// Developed with the assistance of Dartmouth ChatGPT
 import { View, Text, Pressable, StyleSheet, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 

@@ -1,3 +1,4 @@
+// Developed with the assistance of Dartmouth ChatGPT
 import { Tabs, useRouter } from 'expo-router';
 import { Pressable, Text } from 'react-native';
 

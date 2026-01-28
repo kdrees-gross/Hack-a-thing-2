@@ -1,3 +1,4 @@
+// Developed with the assistance of Claude
 import { View, Text, FlatList, Pressable, Switch, StyleSheet } from 'react-native';
 import { Link, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
