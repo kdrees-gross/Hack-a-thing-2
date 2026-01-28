@@ -1,7 +1,8 @@
-import { Text, TextInput, Pressable, ScrollView, Platform } from 'react-native';
+import { Text, TextInput, Pressable, ScrollView, Platform, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function PostJob() {
   const { user } = useAuth();
@@ -65,7 +66,7 @@ export default function PostJob() {
         throw new Error('Failed to post job');
       }
 
-      alert('✅ Job posted successfully');
+      alert('Job posted successfully');
 
       // reset form
       setTitle('');
@@ -76,7 +77,7 @@ export default function PostJob() {
       setStartTime(new Date());
       setEndTime(new Date());
     } catch (err) {
-      alert('❌ Error posting job');
+      alert('Error posting job');
       console.error(err);
     } finally {
       setSubmitting(false);
@@ -84,21 +85,25 @@ export default function PostJob() {
   }
 
   return (
-    <ScrollView style={{ flex: 1, padding: 24 }}>
-      <Text style={{ fontSize: 24, marginBottom: 24 }}>
+    <LinearGradient
+      colors={['#99f6e4', '#5eead4', '#2dd4bf']}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <ScrollView style={styles.content}>
+      <Text style={styles.title}>
         Post a Job
+      </Text>
+      <Text style={styles.instructions}>
+        Fill out the details below to post a job. Workers will be able to apply based on their availability.
       </Text>
 
       <TextInput
         placeholder="Job title"
         value={title}
         onChangeText={setTitle}
-        style={{
-          borderWidth: 1,
-          borderRadius: 6,
-          padding: 12,
-          marginBottom: 12,
-        }}
+        style={styles.input}
       />
 
       <TextInput
@@ -106,53 +111,31 @@ export default function PostJob() {
         value={description}
         onChangeText={setDescription}
         multiline
-        style={{
-          borderWidth: 1,
-          borderRadius: 6,
-          padding: 12,
-          marginBottom: 12,
-          minHeight: 80,
-        }}
+        style={[styles.input, styles.inputMultiline]}
       />
 
       <TextInput
         placeholder="Location"
         value={location}
         onChangeText={setLocation}
-        style={{
-          borderWidth: 1,
-          borderRadius: 6,
-          padding: 12,
-          marginBottom: 12,
-        }}
+        style={styles.input}
       />
 
       <TextInput
         placeholder="Pay (e.g. $50)"
         value={pay}
         onChangeText={setPay}
-        style={{
-          borderWidth: 1,
-          borderRadius: 6,
-          padding: 12,
-          marginBottom: 12,
-        }}
+        style={styles.input}
       />
 
-      <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>
+      <Text style={styles.label}>
         Date
       </Text>
       <Pressable
         onPress={() => setShowDatePicker(true)}
-        style={{
-          borderWidth: 1,
-          borderRadius: 6,
-          padding: 12,
-          marginBottom: 12,
-          backgroundColor: '#f9fafb',
-        }}
+        style={styles.pickerButton}
       >
-        <Text>{formatDate(date)}</Text>
+        <Text style={styles.pickerText}>{formatDate(date)}</Text>
       </Pressable>
       {showDatePicker && (
         <DateTimePicker
@@ -168,20 +151,14 @@ export default function PostJob() {
         />
       )}
 
-      <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>
+      <Text style={styles.label}>
         Start Time
       </Text>
       <Pressable
         onPress={() => setShowStartTimePicker(true)}
-        style={{
-          borderWidth: 1,
-          borderRadius: 6,
-          padding: 12,
-          marginBottom: 12,
-          backgroundColor: '#f9fafb',
-        }}
+        style={styles.pickerButton}
       >
-        <Text>{formatTime(startTime)}</Text>
+        <Text style={styles.pickerText}>{formatTime(startTime)}</Text>
       </Pressable>
       {showStartTimePicker && (
         <DateTimePicker
@@ -198,20 +175,14 @@ export default function PostJob() {
         />
       )}
 
-      <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>
+      <Text style={styles.label}>
         End Time
       </Text>
       <Pressable
         onPress={() => setShowEndTimePicker(true)}
-        style={{
-          borderWidth: 1,
-          borderRadius: 6,
-          padding: 12,
-          marginBottom: 24,
-          backgroundColor: '#f9fafb',
-        }}
+        style={[styles.pickerButton, styles.lastPicker]}
       >
-        <Text>{formatTime(endTime)}</Text>
+        <Text style={styles.pickerText}>{formatTime(endTime)}</Text>
       </Pressable>
       {showEndTimePicker && (
         <DateTimePicker
@@ -231,17 +202,86 @@ export default function PostJob() {
       <Pressable
         onPress={handlePost}
         disabled={submitting}
-        style={{
-          padding: 16,
-          backgroundColor: submitting ? '#9ca3af' : '#2563eb',
-          borderRadius: 8,
-          marginBottom: 32,
-        }}
+        style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
       >
-        <Text style={{ color: 'white', textAlign: 'center', fontSize: 16 }}>
+        <Text style={styles.submitButtonText}>
           {submitting ? 'Posting…' : 'Post Job'}
         </Text>
       </Pressable>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    padding: 24,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: '#0f172a',
+    textAlign: 'center',
+  },
+  instructions: {
+    fontSize: 15,
+    color: '#4b5563',
+    marginBottom: 20,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: 'white',
+    fontSize: 16,
+  },
+  inputMultiline: {
+    minHeight: 80,
+    textAlignVertical: 'top',
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
+    marginTop: 4,
+    color: '#374151',
+  },
+  pickerButton: {
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: 'white',
+  },
+  lastPicker: {
+    marginBottom: 24,
+  },
+  pickerText: {
+    fontSize: 16,
+    color: '#111827',
+  },
+  submitButton: {
+    padding: 16,
+    backgroundColor: '#14b8a6',
+    borderRadius: 8,
+    marginBottom: 32,
+  },
+  submitButtonDisabled: {
+    backgroundColor: '#9ca3af',
+  },
+  submitButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

@@ -9,8 +9,8 @@ export default function WorkerLayout() {
       onPress={() => router.replace('/')}
       style={{ marginLeft: 12 }}
     >
-      <Text style={{ color: '#2563eb', fontSize: 16 }}>
-        Home
+      <Text style={{ color: '#14b8a6', fontSize: 16, fontWeight: '600' }}>
+        ← Back
       </Text>
     </Pressable>
   );
