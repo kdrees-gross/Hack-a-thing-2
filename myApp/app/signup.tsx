@@ -11,15 +11,46 @@ export default function Signup() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<'worker' | 'poster'>('worker');
+  const [error, setError] = useState('');
+
+  function validatePassword(password: string): string | null {
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters long';
+    }
+
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+
+    if (!hasLetter || !hasNumber) {
+      return 'Password must contain both letters and numbers';
+    }
+
+    return null;
+  }
 
   async function handleSignup() {
+    setError('');
+
+    // Validate inputs
+    if (!username || !password) {
+      setError('Please enter both username and password');
+      return;
+    }
+
+    // Validate password
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
+
     try {
       const user = await signup(username, password, role);
       setTimeout(() => {
         router.replace(user.role === 'worker' ? '/(worker)/jobs' : '/(poster)/my-jobs');
       }, 100);
-    } catch {
-      alert('Signup failed');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Signup failed');
     }
   }
 
@@ -35,6 +66,12 @@ export default function Signup() {
           <Text style={styles.title}>Create Account</Text>
           <Text style={styles.subtitle}>Join our community today</Text>
         </View>
+
+        {error ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        ) : null}
 
         <View style={styles.form}>
           <View style={styles.inputGroup}>
@@ -133,6 +170,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#64748b',
     textAlign: 'center',
+  },
+  errorContainer: {
+    backgroundColor: '#fee2e2',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#dc2626',
+  },
+  errorText: {
+    color: '#dc2626',
+    fontSize: 14,
+    textAlign: 'center',
+    fontWeight: '600',
   },
   form: {
     width: '100%',
