@@ -42,6 +42,16 @@ function checkJobMatchesAvailability(job: Job, availability: AvailabilityBlock[]
   });
 }
 
+function isJobExpired(job: Job): boolean {
+  const [year, month, day] = job.date.split('-').map(Number);
+  const [endHours, endMinutes] = job.endTime.split(':').map(Number);
+
+  const jobEndDateTime = new Date(year, month - 1, day, endHours, endMinutes);
+  const now = new Date();
+
+  return jobEndDateTime < now;
+}
+
 export default function Jobs() {
   const { user } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -87,21 +97,29 @@ export default function Jobs() {
     );
   }
 
-  // Filter out jobs that already have an approved worker
+  // Filter out jobs that already have an approved worker or are expired
   const availableJobs = jobs.filter(job => {
     const hasApprovedWorker = job.applications?.some(app => app.status === 'approved');
-    return !hasApprovedWorker;
+    const expired = isJobExpired(job);
+    return !hasApprovedWorker && !expired;
   });
 
   const filteredJobs = showOnlyMatching
     ? availableJobs.filter(job => checkJobMatchesAvailability(job, availability))
     : availableJobs;
 
-  // Sort jobs by date
+  // Sort jobs by date and time
   const sortedJobs = [...filteredJobs].sort((a, b) => {
-    const dateA = new Date(a.date).getTime();
-    const dateB = new Date(b.date).getTime();
-    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    // Parse date and end time to get complete datetime
+    const [yearA, monthA, dayA] = a.date.split('-').map(Number);
+    const [endHoursA, endMinutesA] = a.endTime.split(':').map(Number);
+    const dateTimeA = new Date(yearA, monthA - 1, dayA, endHoursA, endMinutesA).getTime();
+
+    const [yearB, monthB, dayB] = b.date.split('-').map(Number);
+    const [endHoursB, endMinutesB] = b.endTime.split(':').map(Number);
+    const dateTimeB = new Date(yearB, monthB - 1, dayB, endHoursB, endMinutesB).getTime();
+
+    return sortOrder === 'newest' ? dateTimeB - dateTimeA : dateTimeA - dateTimeB;
   });
 
   return (
@@ -200,7 +218,9 @@ export default function Jobs() {
 
                     <Text style={styles.jobTitle}>{item.title}</Text>
                     <Text style={styles.jobDetail}>{item.location}</Text>
-                    <Text style={styles.jobDetail}>{item.pay}</Text>
+                    <Text style={styles.jobDetail}>
+                      {item.pay.startsWith('$') ? item.pay : `$${item.pay}`}
+                    </Text>
                     <Text style={styles.jobDateTime}>
                       {item.date} • {item.startTime} - {item.endTime}
                     </Text>

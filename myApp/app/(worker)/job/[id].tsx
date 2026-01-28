@@ -61,7 +61,9 @@ export default function JobDetail() {
           <View style={styles.detailRow}>
             <View style={styles.detailContent}>
               <Text style={styles.detailLabel}>Pay</Text>
-              <Text style={styles.detailValue}>{job.pay}</Text>
+              <Text style={styles.detailValue}>
+                {job.pay.startsWith('$') ? job.pay : `$${job.pay}`}
+              </Text>
             </View>
           </View>
 

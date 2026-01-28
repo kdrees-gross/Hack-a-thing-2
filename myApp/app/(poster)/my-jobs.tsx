@@ -23,6 +23,16 @@ type Job = {
   applications: Application[];
 };
 
+function isJobExpired(job: Job): boolean {
+  const [year, month, day] = job.date.split('-').map(Number);
+  const [endHours, endMinutes] = job.endTime.split(':').map(Number);
+
+  const jobEndDateTime = new Date(year, month - 1, day, endHours, endMinutes);
+  const now = new Date();
+
+  return jobEndDateTime < now;
+}
+
 export default function MyJobs() {
   const { user } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -88,11 +98,18 @@ export default function MyJobs() {
     return <Text style={{ padding: 16 }}>Loading…</Text>;
   }
 
-  // Sort jobs by date
+  // Sort jobs by date and time
   const sortedJobs = [...jobs].sort((a, b) => {
-    const dateA = new Date(a.date).getTime();
-    const dateB = new Date(b.date).getTime();
-    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    // Parse date and end time to get complete datetime
+    const [yearA, monthA, dayA] = a.date.split('-').map(Number);
+    const [endHoursA, endMinutesA] = a.endTime.split(':').map(Number);
+    const dateTimeA = new Date(yearA, monthA - 1, dayA, endHoursA, endMinutesA).getTime();
+
+    const [yearB, monthB, dayB] = b.date.split('-').map(Number);
+    const [endHoursB, endMinutesB] = b.endTime.split(':').map(Number);
+    const dateTimeB = new Date(yearB, monthB - 1, dayB, endHoursB, endMinutesB).getTime();
+
+    return sortOrder === 'newest' ? dateTimeB - dateTimeA : dateTimeA - dateTimeB;
   });
 
   return (
@@ -140,18 +157,25 @@ export default function MyJobs() {
           const hasApprovedWorker = job.applications.some(
             (a) => a.status === 'approved'
           );
+          const expired = isJobExpired(job);
 
           return (
             <View
               key={job.id}
               style={[
                 styles.jobCard,
-                hasApprovedWorker && styles.jobCardFilled
+                hasApprovedWorker && styles.jobCardFilled,
+                expired && styles.jobCardExpired
               ]}
             >
               <View style={styles.jobHeader}>
                 <View style={styles.jobInfo}>
-                  {hasApprovedWorker && (
+                  {expired && (
+                    <View style={styles.expiredBadge}>
+                      <Text style={styles.expiredBadgeText}>EXPIRED</Text>
+                    </View>
+                  )}
+                  {hasApprovedWorker && !expired && (
                     <View style={styles.filledBadge}>
                       <Text style={styles.filledBadgeText}>FILLED</Text>
                     </View>
@@ -160,7 +184,9 @@ export default function MyJobs() {
                     {job.title}
                   </Text>
                   <Text style={styles.jobDetail}>{job.location}</Text>
-                  <Text style={styles.jobDetail}>{job.pay}</Text>
+                  <Text style={styles.jobDetail}>
+                    {job.pay.startsWith('$') ? job.pay : `$${job.pay}`}
+                  </Text>
                   <Text style={styles.jobDateTime}>
                     {job.date} • {job.startTime} - {job.endTime}
                   </Text>
@@ -291,6 +317,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#d1fae5',
     borderColor: '#6ee7b7',
   },
+  jobCardExpired: {
+    backgroundColor: '#f3f4f6',
+    borderColor: '#9ca3af',
+    opacity: 0.7,
+  },
   filledBadge: {
     alignSelf: 'flex-start',
     backgroundColor: '#16a34a',
@@ -300,6 +331,19 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   filledBadgeText: {
+    color: 'white',
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  expiredBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#6b7280',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    marginBottom: 12,
+  },
+  expiredBadgeText: {
     color: 'white',
     fontSize: 11,
     fontWeight: 'bold',

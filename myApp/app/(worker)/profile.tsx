@@ -83,6 +83,21 @@ export default function Profile() {
       return;
     }
 
+    // Validate all availability blocks
+    for (let i = 0; i < availability.length; i++) {
+      const block = availability[i];
+      const [startHours, startMinutes] = block.startTime.split(':').map(Number);
+      const [endHours, endMinutes] = block.endTime.split(':').map(Number);
+
+      const startMinutesTotal = startHours * 60 + startMinutes;
+      const endMinutesTotal = endHours * 60 + endMinutes;
+
+      if (endMinutesTotal <= startMinutesTotal) {
+        alert(`Block ${i + 1}: End time must be after start time`);
+        return;
+      }
+    }
+
     try {
       const response = await fetch(`http://127.0.0.1:4000/users/${user.id}/availability`, {
         method: 'PUT',
@@ -276,6 +291,9 @@ export default function Profile() {
             </Text>
             <Text style={styles.jobTitle}>{job.title}</Text>
             <Text style={styles.jobDetail}>{job.location}</Text>
+            <Text style={styles.jobDetail}>
+              {job.pay.startsWith('$') ? job.pay : `$${job.pay}`}
+            </Text>
             <Text style={styles.jobDetail}>{job.date} • {job.startTime} - {job.endTime}</Text>
             {hasApprovedWorker && (
               <Text style={styles.filledMessage}>
@@ -299,6 +317,9 @@ export default function Profile() {
           <Text style={styles.jobStatusGreen}>Approved</Text>
           <Text style={styles.jobTitle}>{job.title}</Text>
           <Text style={styles.jobDetail}>{job.location}</Text>
+          <Text style={styles.jobDetail}>
+            {job.pay.startsWith('$') ? job.pay : `$${job.pay}`}
+          </Text>
           <Text style={styles.jobDetail}>{job.date} • {job.startTime} - {job.endTime}</Text>
         </View>
       ))}
