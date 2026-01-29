@@ -78,32 +78,62 @@ I used Dartmouth ChatGPT to help set up my laptop with ReactNative and XCode, an
 
 ## 6) Screenshots
 
+Landing page:
+
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 04 23" src="https://github.com/user-attachments/assets/a3f52236-d0fb-4487-8124-0ea7e84056d8" />
+
+Sign up as worker:
 
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 05 06" src="https://github.com/user-attachments/assets/a5db73c9-25e9-410a-bf49-5a2e1ab75f7f" />
 
+Add worker availability:
+
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 06 06" src="https://github.com/user-attachments/assets/7c36c6d4-167a-4420-af6e-9783967977b2" />
+
+Sign up as employer:
 
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 07 13" src="https://github.com/user-attachments/assets/34405680-a082-415e-b408-2648d9427241" />
 
+Post a job:
+
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 09 15" src="https://github.com/user-attachments/assets/c45b4367-755c-4ea8-9835-620d136e12d3" />
+
+View posted jobs:
 
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 09 43" src="https://github.com/user-attachments/assets/24c6fe4c-4339-4836-825d-9fdab02d2951" />
 
+Worker sees a job and clicks on description:
+
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 10 15" src="https://github.com/user-attachments/assets/74c19de8-6157-4fe8-8d57-47620ef5f9da" />
+
+Worker applies for a job:
 
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 10 19" src="https://github.com/user-attachments/assets/af23e864-b5d3-466d-89d1-ded1d4ca46ec" />
 
+Worker sees job listed as pending:
+
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 10 22" src="https://github.com/user-attachments/assets/77b5c07b-f9af-433f-a31b-1fa38d60e4d9" />
+
+Different worker sees jobs with availability match:
 
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 11 27" src="https://github.com/user-attachments/assets/a101cb03-00cd-4c85-b0e5-8bb4a75627e5" />
 
+Filter for availability match:
+
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 11 31" src="https://github.com/user-attachments/assets/df0d0d4b-4e71-4e5b-96b1-4762fa8b27f6" />
+
+Employer sees job applications:
 
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 12 08" src="https://github.com/user-attachments/assets/87a325fa-a1ae-4161-a9b5-041abe81366f" />
 
+Employer approves application:
+
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 12 13" src="https://github.com/user-attachments/assets/c05fbe92-a3eb-41d7-b664-b5a6492ba44f" />
 
+Worker sees job as approved:
+
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 12 48" src="https://github.com/user-attachments/assets/6766097d-2711-4bea-9cfa-1b4cfc1dc28a" />
+
+Filled position is no longer displayed in job list:
 
 <img width="300" alt="Simulator Screenshot - iPhone 17 Pro - 2026-01-28 at 23 12 52" src="https://github.com/user-attachments/assets/ffda6185-8ccd-4b5a-8733-3a9ea39fd2bd" />
